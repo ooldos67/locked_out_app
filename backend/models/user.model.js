@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// MongoDB is schema-less, so mongoose allows for type safety and validation before saving.
 const userSchema = new mongoose.Schema(
   {
     name: {
