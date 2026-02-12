@@ -74,12 +74,45 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
   try {
-  } catch (error) {}
+    const { username, password } = req.body;
+
+    // check user exists...
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: "invalid username or password" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ message: "Invalid username or password" });
+    }
+
+    // Create a jwt token, stores _id inside.
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "3d" }
+    );
+
+    res.cookie("jwt-lockedOut", token, {
+      httpOnly: true, //prevents XSS attack
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+      sameSite: "strict", //prevents CSRF attack
+      secure: process.env.NODE_ENV === "production", //prevents man in the middle attacks
+    });
+
+    res.json({ message: "Logged in successfully" });
+  } catch (error) {
+    console.error("Error in login controller", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const logout = (req, res) => {
-  try {
-  } catch (error) {}
+  res.clearCookie("jwt-lockedOut");
+  res.json({ message: "Logged out successfully" });
 };
