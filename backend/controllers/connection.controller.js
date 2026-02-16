@@ -1,7 +1,6 @@
 import ConnectionRequest from "../models/connectionRequest.model.js";
 import Notification from "../models/notification.model.js";
-import sendConnectionAcceptedEmail from "../emails/emailHandlers.js";
-import connectionRequest from "../models/connectionRequest.model.js";
+import { sendConnectionAcceptedEmail } from "../emails/emailHandlers.js";
 import User from "../models/user.model.js";
 
 export const sendConnectionRequest = async (req, res) => {
@@ -106,8 +105,8 @@ export const acceptConnectionRequest = async (req, res) => {
     res.status(201).json({ message: "Connection accepted successfully" });
 
     // Send email
-    const senderEmail = request.sender.senderEmail;
-    const senderName = request.sender.senderName;
+    const senderEmail = request.sender.email;
+    const senderName = request.sender.name;
     const recipientName = request.recipient.name;
     const profileUrl =
       process.env.CLIENT_URL + "/profile/" + request.recipient.username;
