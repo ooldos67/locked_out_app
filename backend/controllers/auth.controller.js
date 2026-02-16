@@ -69,8 +69,8 @@ export const signup = async (req, res) => {
       console.error("Error sending welcome email", emailError);
     }
   } catch (error) {
-    console.log("Error in signup", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error in signup controller", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
