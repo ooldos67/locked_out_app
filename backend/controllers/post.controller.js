@@ -38,7 +38,7 @@ export const createPost = async (req, res) => {
       });
     } else {
       newPost = new Post({
-        author: re.user._id,
+        author: req.user._id,
         content,
       });
     }
