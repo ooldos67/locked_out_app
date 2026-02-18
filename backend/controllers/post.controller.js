@@ -5,8 +5,9 @@ import Notification from "../models/notification.model.js";
 export const getFeedPosts = async (req, res) => {
   try {
     // Look for posts where author is in ($in) the list of the logged in users' user.connections
+    // and posts of the logged in user
     const posts = await Post.find({
-      author: { $in: req.user.connections },
+      author: { $in: [...req.user.connections, req.user._id] },
     })
       // populate() replaces referenced IDs with the actual documents they point to.
       //Instead of just returning the author ID, it replaces it with: name, username, profilePicture, headline
